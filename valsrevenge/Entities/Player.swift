@@ -9,22 +9,32 @@
 import SpriteKit
 import GameplayKit
 
-enum Direction: String {
-    case stop
-    case left
-    case right
-    case up
-    case down
-    case topLeft
-    case topRight
-    case bottomLeft
-    case bottomRight
-}
+//enum Direction: String {
+//    case stop
+//    case left
+//    case right
+//    case up
+//    case down
+//    case topLeft
+//    case topRight
+//    case bottomLeft
+//    case bottomRight
+//}
 
 class Player: SKSpriteNode {
     
     // Player properties
     var stateMachine = GKStateMachine(states: [PlayerHasKeyState(), PlayerHasNoKeyState()])
+    
+    var movementSpeed: CGFloat = 5
+    
+    var maxProjectiles: Int = 1
+    var numProjectiles: Int = 0
+    
+    var projectileSpeed: CGFloat = 25
+    var projectileRange: TimeInterval = 1
+    
+    let attackDelay = SKAction.wait(forDuration: 0.25)
     
     var hud = SKNode()
     private let treasureLabel = SKLabelNode(fontNamed: "AvenirNext-Bold")
@@ -52,7 +62,7 @@ class Player: SKSpriteNode {
     }
     
     var agent = GKAgent2D()
-    private var currentDirection = Direction.stop
+    //private var currentDirection = Direction.stop
     
     // Override this method to allow for a class to work in Scene Editor
     required init?(coder: NSCoder) {
@@ -131,89 +141,143 @@ class Player: SKSpriteNode {
         }
     }
     
-    func move(_ direction: Direction) {
-        //print("move player: \(direction.rawValue)")
-        switch direction {
-        case .up:
-            self.physicsBody?.velocity = CGVector(dx: 0, dy: 100)
-            //self.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 100))
-            //self.physicsBody?.applyForce(CGVector(dx: 0, dy: 100))
-        case .down:
-            self.physicsBody?.velocity = CGVector(dx: 0, dy: -100)
-        case .left:
-            self.physicsBody?.velocity = CGVector(dx: -100, dy: 0)
-        case .right:
-            self.physicsBody?.velocity = CGVector(dx: 100, dy: 0)
-        case .topLeft:
-            self.physicsBody?.velocity = CGVector(dx: -100, dy: 100)
-        case .topRight:
-            self.physicsBody?.velocity = CGVector(dx: 100, dy: 100)
-        case .bottomLeft:
-            self.physicsBody?.velocity = CGVector(dx: -100, dy: -100)
-        case .bottomRight:
-            self.physicsBody?.velocity = CGVector(dx: 100, dy: -100)
-        case .stop:
-            stop()
-        }
+    func attack(direction: CGVector) {
         
-        if direction != .stop {
-            currentDirection = direction
+        // Verify the direction isn't zero and that the player hasn't
+        // shot more projectiles than the max allowed at one time
+        if direction != .zero && numProjectiles < maxProjectiles {
+            
+            // Increase the number of "current" projectiles
+            numProjectiles += 1
+            
+            // Setup the projectile
+            let projectile = SKSpriteNode(imageNamed: "knife")
+            projectile.position = CGPoint(x: 0.0, y: 0.0)
+            projectile.zPosition += 1
+            addChild(projectile)
+            
+            // Setup the physics for the projectile
+            let physicsBody = SKPhysicsBody(rectangleOf: projectile.size)
+            
+            physicsBody.affectedByGravity = false
+            physicsBody.allowsRotation = true
+            physicsBody.isDynamic = true
+    
+            physicsBody.categoryBitMask = PhysicsBody.projectile.categoryBitMask
+            physicsBody.contactTestBitMask = PhysicsBody.projectile.contactTestBitMask
+            physicsBody.collisionBitMask = PhysicsBody.projectile.collisionBitMask
+            
+            projectile.physicsBody = physicsBody
+            
+            // Set the throw direction
+            let throwDirection = CGVector(dx: direction.dx * projectileSpeed,
+                                          dy: direction.dy * projectileSpeed)
+            
+            // Create and run the actions to attack
+            let wait = SKAction.wait(forDuration: projectileRange)
+            let removeFromScene = SKAction.removeFromParent()
+            
+            let spin = SKAction.applyTorque(0.25, duration: projectileRange)
+            let toss = SKAction.move(by: throwDirection, duration: projectileRange)
+            
+            let actionTTL = SKAction.sequence([wait, removeFromScene])
+            let actionThrow = SKAction.group([spin, toss])
+            
+            let actionAttack = SKAction.group([actionTTL, actionThrow])
+            projectile.run(actionAttack)
+            
+            // Setup attack govenor (attack speed limiter)
+            let reduceCount = SKAction.run({
+                self.numProjectiles -= 1
+            })
+            let reduceSequence = SKAction.sequence([attackDelay, reduceCount])
+            run(reduceSequence)
         }
     }
     
-    func stop() {
-        self.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
-    }
+//    func move(_ direction: Direction) {
+//        //print("move player: \(direction.rawValue)")
+//        switch direction {
+//        case .up:
+//            self.physicsBody?.velocity = CGVector(dx: 0, dy: 100)
+//            //self.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 100))
+//            //self.physicsBody?.applyForce(CGVector(dx: 0, dy: 100))
+//        case .down:
+//            self.physicsBody?.velocity = CGVector(dx: 0, dy: -100)
+//        case .left:
+//            self.physicsBody?.velocity = CGVector(dx: -100, dy: 0)
+//        case .right:
+//            self.physicsBody?.velocity = CGVector(dx: 100, dy: 0)
+//        case .topLeft:
+//            self.physicsBody?.velocity = CGVector(dx: -100, dy: 100)
+//        case .topRight:
+//            self.physicsBody?.velocity = CGVector(dx: 100, dy: 100)
+//        case .bottomLeft:
+//            self.physicsBody?.velocity = CGVector(dx: -100, dy: -100)
+//        case .bottomRight:
+//            self.physicsBody?.velocity = CGVector(dx: 100, dy: -100)
+//        case .stop:
+//            stop()
+//        }
+//        
+//        if direction != .stop {
+//            currentDirection = direction
+//        }
+//    }
     
-    func attack() {
-        let projectile = SKSpriteNode(imageNamed: "knife")
-        projectile.position = CGPoint(x: 0.0, y: 0.0)
-        addChild(projectile)
-        
-        // Setup physics for projectile
-        let physicsBody = SKPhysicsBody(rectangleOf: projectile.size)
-        
-        physicsBody.affectedByGravity = false
-        physicsBody.allowsRotation = true
-        physicsBody.isDynamic = true
-        
-        physicsBody.categoryBitMask = PhysicsBody.projectile.categoryBitMask
-        physicsBody.contactTestBitMask = PhysicsBody.projectile.contactTestBitMask
-        physicsBody.collisionBitMask = PhysicsBody.projectile.collisionBitMask
-        
-        projectile.physicsBody = physicsBody
-        
-        var throwDirection = CGVector(dx: 0, dy: 0)
-        
-        switch currentDirection {
-        case .up:
-            throwDirection = CGVector(dx: 0, dy: 300)
-            projectile.zRotation = 0
-        case .down:
-            throwDirection = CGVector(dx: 0, dy: -300)
-            projectile.zRotation = -CGFloat.pi
-        case .left:
-            throwDirection = CGVector(dx: -300, dy: 0)
-            projectile.zRotation = CGFloat.pi/2
-        case .right, .stop: // default pre-movement (throw right)
-            throwDirection = CGVector(dx: 300, dy: 0)
-            projectile.zRotation = -CGFloat.pi/2
-        case .topLeft:
-            throwDirection = CGVector(dx: -300, dy: 300)
-            projectile.zRotation = CGFloat.pi/4
-        case .topRight:
-            throwDirection = CGVector(dx: 300, dy: 300)
-            projectile.zRotation = -CGFloat.pi/4
-        case .bottomLeft:
-            throwDirection = CGVector(dx: -300, dy: -300)
-            projectile.zRotation = 3 * CGFloat.pi/4
-        case .bottomRight:
-            throwDirection = CGVector(dx: 300, dy: -300)
-            projectile.zRotation = 3 * -CGFloat.pi/4
-        }
-        
-        let throwProjectile = SKAction.move(by: throwDirection, duration: 0.25)
-        projectile.run(throwProjectile,
-                       completion: {projectile.removeFromParent()})
-    }
+//    func stop() {
+//        self.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
+//    }
+    
+//    func attack() {
+//        let projectile = SKSpriteNode(imageNamed: "knife")
+//        projectile.position = CGPoint(x: 0.0, y: 0.0)
+//        addChild(projectile)
+//        
+//        // Setup physics for projectile
+//        let physicsBody = SKPhysicsBody(rectangleOf: projectile.size)
+//        
+//        physicsBody.affectedByGravity = false
+//        physicsBody.allowsRotation = true
+//        physicsBody.isDynamic = true
+//        
+//        physicsBody.categoryBitMask = PhysicsBody.projectile.categoryBitMask
+//        physicsBody.contactTestBitMask = PhysicsBody.projectile.contactTestBitMask
+//        physicsBody.collisionBitMask = PhysicsBody.projectile.collisionBitMask
+//        
+//        projectile.physicsBody = physicsBody
+//        
+//        var throwDirection = CGVector(dx: 0, dy: 0)
+//        
+//        switch currentDirection {
+//        case .up:
+//            throwDirection = CGVector(dx: 0, dy: 300)
+//            projectile.zRotation = 0
+//        case .down:
+//            throwDirection = CGVector(dx: 0, dy: -300)
+//            projectile.zRotation = -CGFloat.pi
+//        case .left:
+//            throwDirection = CGVector(dx: -300, dy: 0)
+//            projectile.zRotation = CGFloat.pi/2
+//        case .right, .stop: // default pre-movement (throw right)
+//            throwDirection = CGVector(dx: 300, dy: 0)
+//            projectile.zRotation = -CGFloat.pi/2
+//        case .topLeft:
+//            throwDirection = CGVector(dx: -300, dy: 300)
+//            projectile.zRotation = CGFloat.pi/4
+//        case .topRight:
+//            throwDirection = CGVector(dx: 300, dy: 300)
+//            projectile.zRotation = -CGFloat.pi/4
+//        case .bottomLeft:
+//            throwDirection = CGVector(dx: -300, dy: -300)
+//            projectile.zRotation = 3 * CGFloat.pi/4
+//        case .bottomRight:
+//            throwDirection = CGVector(dx: 300, dy: -300)
+//            projectile.zRotation = 3 * -CGFloat.pi/4
+//        }
+//        
+//        let throwProjectile = SKAction.move(by: throwDirection, duration: 0.25)
+//        projectile.run(throwProjectile,
+//                       completion: {projectile.removeFromParent()})
+//    }
 }
