@@ -80,6 +80,8 @@ class GameScene: SKScene {
     
     override func sceneDidLoad() {
         self.lastUpdateTime = 0
+        
+        GameData.shared.saveDataWithFileName("gamedata.json")
     }
     
     override func didMove(to view: SKView) {
@@ -128,6 +130,24 @@ class GameScene: SKScene {
         if let controllerAttack = controllerAttack {
             addChild(controllerAttack)
         }
+        
+        setupMusic()
+    }
+    
+    func setupMusic() {
+        let musicNode = SKAudioNode(fileNamed: "music")
+        musicNode.isPositional = false
+        
+        // Make the audio node positional
+        // so that the music gets louder as
+        // the player gets closer to the exit
+        if let exit = childNode(withName: "exit") {
+            musicNode.position = exit.position
+            musicNode.isPositional = true
+            listener = player
+        }
+        
+        addChild(musicNode)
     }
     
     func touchDown(atPoint pos : CGPoint, touch: UITouch) {

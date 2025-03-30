@@ -37,7 +37,8 @@ struct PhysicsBody: OptionSet, Hashable {
     
     static var collisions: [PhysicsBody: [PhysicsBody]] = [
         .player: [.wall, .door, .monster],
-        .monster: [.wall, .door, .monster]
+        .monster: [.wall, .door, .monster],
+        .projectile: [.wall, .door, .monster]
     ]
     
     static var contactTest: [PhysicsBody: [PhysicsBody]] = [

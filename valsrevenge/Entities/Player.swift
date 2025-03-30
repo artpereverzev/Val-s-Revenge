@@ -28,6 +28,8 @@ class Player: SKSpriteNode {
     
     var movementSpeed: CGFloat = 5
     
+    var level = String(GameData.shared.level)
+    
     var maxProjectiles: Int = 1
     var numProjectiles: Int = 0
     
@@ -39,8 +41,9 @@ class Player: SKSpriteNode {
     var hud = SKNode()
     private let treasureLabel = SKLabelNode(fontNamed: "AvenirNext-Bold")
     private let keysLabel = SKLabelNode(fontNamed: "AvenirNext-Bold")
+    private let levelLabel = SKLabelNode(fontNamed: "AvenirNext-Bold")
     
-    private var keys: Int = 0 {
+    private var keys: Int = GameData.shared.keys {
         didSet {
             keysLabel.text = "Keys: \(keys)"
             print("Keys: \(keys)")
@@ -54,7 +57,7 @@ class Player: SKSpriteNode {
         }
     }
     
-    private var treasure: Int = 0 {
+    private var treasure: Int = GameData.shared.treasure {
         didSet {
             treasureLabel.text = "Treasure: \(treasure)"
             print("Treasure: \(treasure)")
@@ -63,6 +66,10 @@ class Player: SKSpriteNode {
     
     var agent = GKAgent2D()
     //private var currentDirection = Direction.stop
+    
+    func getStats() -> (keys: Int, treasure: Int) {
+        return (self.keys, self.treasure)
+    }
     
     // Override this method to allow for a class to work in Scene Editor
     required init?(coder: NSCoder) {
@@ -89,9 +96,17 @@ class Player: SKSpriteNode {
         keysLabel.position = CGPoint(x: 0, y: treasureLabel.frame.minY - keysLabel.frame.height)
         keysLabel.zPosition += 1
         
+        // Setup the level label
+        levelLabel.text = "Level: \(level)"
+        levelLabel.horizontalAlignmentMode = .right
+        levelLabel.verticalAlignmentMode = .center
+        levelLabel.position = CGPoint(x: 0, y: treasureLabel.frame.minY - (keysLabel.frame.height * 2.1))
+        levelLabel.zPosition += 1
+        
         // Add labels to the HUD
         hud.addChild(treasureLabel)
         hud.addChild(keysLabel)
+        hud.addChild(levelLabel)
         
         // Add the HUD to the scene
         scene.addChild(hud)
@@ -141,7 +156,7 @@ class Player: SKSpriteNode {
         }
     }
     
-    func attack(direction: CGVector) {
+    func attack(direction: CGVector, emitterNamed: String?) {
         
         // Verify the direction isn't zero and that the player hasn't
         // shot more projectiles than the max allowed at one time
@@ -154,6 +169,16 @@ class Player: SKSpriteNode {
             let projectile = SKSpriteNode(imageNamed: "knife")
             projectile.position = CGPoint(x: 0.0, y: 0.0)
             projectile.zPosition += 1
+            
+            // TODO: Need to decide moving to other component? Or create entire attack component with particles, attack type (range/melee etc)?
+            // Setup optional particles for projectile
+            if let emitterNamed = emitterNamed,
+               let particles = SKEmitterNode(fileNamed: emitterNamed) {
+                particles.name = "particles"
+                particles.position = CGPoint(x: 0.0, y: -20.0)
+                projectile.addChild(particles)
+            }
+            
             addChild(projectile)
             
             // Setup the physics for the projectile

@@ -77,6 +77,25 @@ extension GameScene: SKPhysicsContactDelegate {
                 healthComponent.updateHealth(-1, forNode: monsterNode)
             }
             
+            // Checking if projectile (right now only 'knife' type) contact with monster node, if so removing projectile
+            let projectileNode = contact.bodyA.categoryBitMask == PhysicsBody.projectile.categoryBitMask ?
+            contact.bodyA.node : contact.bodyB.node
+            projectileNode?.removeFromParent()
+            
+            // MARK: - Player | Platform
+        case PhysicsBody.player.categoryBitMask | PhysicsBody.exit.categoryBitMask:
+            let playerNode = contact.bodyA.categoryBitMask == PhysicsBody.player.categoryBitMask ?
+            contact.bodyA.node : contact.bodyB.node
+            
+            // Update the save stats
+            if let player = playerNode as? Player {
+                GameData.shared.keys = player.getStats().keys
+                GameData.shared.treasure = player.getStats().treasure
+            }
+            
+            // Load the next level
+            GameData.shared.level += 1
+            loadSceneForLevel(GameData.shared.level)
             
         default:
             break
