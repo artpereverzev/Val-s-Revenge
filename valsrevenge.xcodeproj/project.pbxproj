@@ -51,6 +51,7 @@
 		334BB0182D946989006613A6 /* PathfindingComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 334BB0172D94697D006613A6 /* PathfindingComponent.swift */; };
 		334BB0612D971E55006613A6 /* Controller.sks in Resources */ = {isa = PBXBuildFile; fileRef = 334BB0602D971E55006613A6 /* Controller.sks */; };
 		334BB0632D971EA7006613A6 /* Controller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 334BB0622D971E9A006613A6 /* Controller.swift */; };
+		334BB06F2D992ECA006613A6 /* CGFloat+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 334BB06E2D992EBA006613A6 /* CGFloat+Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -100,6 +101,7 @@
 		334BB0172D94697D006613A6 /* PathfindingComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PathfindingComponent.swift; sourceTree = "<group>"; };
 		334BB0602D971E55006613A6 /* Controller.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Controller.sks; sourceTree = "<group>"; };
 		334BB0622D971E9A006613A6 /* Controller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Controller.swift; sourceTree = "<group>"; };
+		334BB06E2D992EBA006613A6 /* CGFloat+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGFloat+Extensions.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,6 +118,7 @@
 		041A8F79250F8FCA0027D1C4 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				334BB06E2D992EBA006613A6 /* CGFloat+Extensions.swift */,
 				334BB0132D9414B4006613A6 /* SKNode+AgentDelegate.swift */,
 				334BB00F2D927E28006613A6 /* GameScene+PhysicsContact.swift */,
 				334BB0022D91BF3B006613A6 /* SKTexture+LoadTextures.swift */,
@@ -355,6 +358,7 @@
 				334BB0052D91C0BF006613A6 /* AnimationComponent.swift in Sources */,
 				047090482515277A009CC70B /* SoundLibrary.swift in Sources */,
 				334BB0032D91BF4E006613A6 /* SKTexture+LoadTextures.swift in Sources */,
+				334BB06F2D992ECA006613A6 /* CGFloat+Extensions.swift in Sources */,
 				043982FC24B0DA890030A542 /* GameScene.swift in Sources */,
 				043982FE24B0DA890030A542 /* GameViewController.swift in Sources */,
 				334BB00A2D91DAAA006613A6 /* PlayerStates.swift in Sources */,
