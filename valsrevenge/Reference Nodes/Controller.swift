@@ -158,7 +158,7 @@ class Controller: SKReferenceNode {
             return
         }
         
-        player.attack(direction: direction)
+        player.attack(direction: direction, emitterNamed: "BombFire.sks")
         
     }
 }

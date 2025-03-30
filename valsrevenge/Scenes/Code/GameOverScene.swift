@@ -1,5 +1,5 @@
 //
-//  TitleScene.swift
+//  GameOverScene.swift
 //  valsrevenge
 //
 //  Created by Tammy Coron on 7/4/20.
@@ -9,7 +9,7 @@
 import SpriteKit
 import GameplayKit
 
-class TitleScene: SKScene {
+class GameOverScene: SKScene {
   
   private var newGameButton: SKSpriteNode!
   private var loadGameButton: SKSpriteNode!
