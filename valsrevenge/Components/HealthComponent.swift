@@ -45,10 +45,19 @@ class HealthComponent: GKComponent {
                     self.componentNode.run(playSound, completion: {
                         self.componentNode.removeFromParent()
                     })
+                    
+                    //print("MONSTER DIED: \(self.componentNode)")
+                    self.die()
                 }
             }
         }
         
+    }
+    
+    func die() {
+        if let experienceComponent = entity?.component(ofType: ExperienceComponent.self) {
+            experienceComponent.rewardPlayer()
+        }
     }
     
     func updateHealth(_ value: Int, forNode node: SKNode?) {

@@ -13,6 +13,7 @@ enum GameObjectType: String {
     // Monsters
     case skeleton
     case goblin
+    case pawn
     
     // Collectibles
     case key
@@ -24,9 +25,11 @@ struct GameObject {
     static let defaultGeneratorType = GameObjectType.skeleton.rawValue
     static let defaultAnimationType = GameObjectType.skeleton.rawValue
     static let defaultCollectibleType = GameObjectType.key.rawValue
+    static let defaultExperienceType = GameObjectType.skeleton.rawValue
     
     static let skeleton = Skeleton()
     static let goblin = Goblin()
+    static let pawn = Pawn()
     
     static let key = Key()
     static let food = Food()
@@ -37,6 +40,7 @@ struct GameObject {
                                                                            prefix: "goblin_",
                                                                            startsAt: 0,
                                                                            stopAt: 1))
+        let experienceAmount = 25
     }
     
     struct Skeleton {
@@ -45,6 +49,16 @@ struct GameObject {
                                                                            startsAt: 0,
                                                                            stopAt: 1),
                                           timePerFrame: TimeInterval(1.0 / 25.0))
+        let experienceAmount = 10
+    }
+    
+    struct Pawn {
+        let animationSettings = Animation(textures: SKTexture.loadTextures(atlas: "monster_pawn",
+                                                                           prefix: "pawn_",
+                                                                           startsAt: 0,
+                                                                           stopAt: 5),
+                                          timePerFrame: TimeInterval(1.0 / 25.0))
+        let experienceAmount = 35
     }
     
     struct Key {
@@ -64,6 +78,18 @@ struct GameObject {
         let collectibleSettings = Collectible(type: .treasure, collectSoundFile: "treasure", destroySoundFile: "destroyed")
     }
     
+    static func forExperienceType(_ type: GameObjectType?) -> Int? {
+        switch type {
+        case .goblin:
+            return GameObject.goblin.experienceAmount
+        case .skeleton:
+            return GameObject.skeleton.experienceAmount
+        case .pawn:
+            return GameObject.pawn.experienceAmount
+        default:
+            return 0
+        }
+    }
     
     static func forAnimationType(_ type: GameObjectType?) -> Animation? {
         switch type {
@@ -71,6 +97,8 @@ struct GameObject {
             return GameObject.goblin.animationSettings
         case .skeleton:
             return GameObject.skeleton.animationSettings
+        case .pawn:
+            return GameObject.pawn.animationSettings
         default:
             return nil
         }

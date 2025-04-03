@@ -2,8 +2,8 @@
 //  GameScene+ViewUpdates.swift
 //  valsrevenge
 //
-//  Created by Tammy Coron on 7/4/20.
-//  Copyright © 2020 Just Write Code LLC. All rights reserved.
+//  Created by Artem Pereverzev on 28.03.2025.
+//  Copyright © 2025 Just Write Code LLC. All rights reserved.
 //
 
 import SpriteKit
