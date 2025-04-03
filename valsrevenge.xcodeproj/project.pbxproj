@@ -59,7 +59,15 @@
 		334BB0792D99827C006613A6 /* SKScene+SceneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 334BB0782D99827C006613A6 /* SKScene+SceneManager.swift */; };
 		334BB07C2D998E12006613A6 /* GameData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 334BB07B2D998E12006613A6 /* GameData.swift */; };
 		334BB0842D99D33E006613A6 /* GameScene_2.sks in Resources */ = {isa = PBXBuildFile; fileRef = 334BB0832D99D33E006613A6 /* GameScene_2.sks */; };
-		334BB0862D99DC66006613A6 /* BombFire.sks in Resources */ = {isa = PBXBuildFile; fileRef = 334BB0852D99DC66006613A6 /* BombFire.sks */; };
+		334BB0862D99DC66006613A6 /* Fire.sks in Resources */ = {isa = PBXBuildFile; fileRef = 334BB0852D99DC66006613A6 /* Fire.sks */; };
+		334BB0892D9ABE67006613A6 /* GameScene_3.sks in Resources */ = {isa = PBXBuildFile; fileRef = 334BB0882D9ABE67006613A6 /* GameScene_3.sks */; };
+		334BB08B2D9C1385006613A6 /* AttackComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 334BB08A2D9C137F006613A6 /* AttackComponent.swift */; };
+		33ACD04C2D9D086E0036D018 /* CGVector+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33ACD04B2D9D08540036D018 /* CGVector+Extensions.swift */; };
+		33ACD0832D9D0F240036D018 /* BombFire.sks in Resources */ = {isa = PBXBuildFile; fileRef = 33ACD0822D9D0F240036D018 /* BombFire.sks */; };
+		33ACD0852D9D8C1E0036D018 /* SkillTreeScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 33ACD0842D9D8C1E0036D018 /* SkillTreeScene.sks */; };
+		33ACD0872D9D8C620036D018 /* SkillTreeScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33ACD0862D9D8C620036D018 /* SkillTreeScene.swift */; };
+		33ACD0892D9E51700036D018 /* ExperienceComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33ACD0882D9E516B0036D018 /* ExperienceComponent.swift */; };
+		33ACD08B2D9EF2FE0036D018 /* EnemyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33ACD08A2D9EF2E60036D018 /* EnemyManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -117,7 +125,15 @@
 		334BB0782D99827C006613A6 /* SKScene+SceneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SKScene+SceneManager.swift"; sourceTree = "<group>"; };
 		334BB07B2D998E12006613A6 /* GameData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameData.swift; sourceTree = "<group>"; };
 		334BB0832D99D33E006613A6 /* GameScene_2.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene_2.sks; sourceTree = "<group>"; };
-		334BB0852D99DC66006613A6 /* BombFire.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = BombFire.sks; sourceTree = "<group>"; };
+		334BB0852D99DC66006613A6 /* Fire.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Fire.sks; sourceTree = "<group>"; };
+		334BB0882D9ABE67006613A6 /* GameScene_3.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene_3.sks; sourceTree = "<group>"; };
+		334BB08A2D9C137F006613A6 /* AttackComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttackComponent.swift; sourceTree = "<group>"; };
+		33ACD04B2D9D08540036D018 /* CGVector+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGVector+Extensions.swift"; sourceTree = "<group>"; };
+		33ACD0822D9D0F240036D018 /* BombFire.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = BombFire.sks; sourceTree = "<group>"; };
+		33ACD0842D9D8C1E0036D018 /* SkillTreeScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = SkillTreeScene.sks; sourceTree = "<group>"; };
+		33ACD0862D9D8C620036D018 /* SkillTreeScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkillTreeScene.swift; sourceTree = "<group>"; };
+		33ACD0882D9E516B0036D018 /* ExperienceComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExperienceComponent.swift; sourceTree = "<group>"; };
+		33ACD08A2D9EF2E60036D018 /* EnemyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnemyManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -134,6 +150,7 @@
 		041A8F79250F8FCA0027D1C4 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				33ACD04B2D9D08540036D018 /* CGVector+Extensions.swift */,
 				334BB06E2D992EBA006613A6 /* CGFloat+Extensions.swift */,
 				334BB0132D9414B4006613A6 /* SKNode+AgentDelegate.swift */,
 				334BB00F2D927E28006613A6 /* GameScene+PhysicsContact.swift */,
@@ -163,8 +180,10 @@
 				334BB07A2D99829F006613A6 /* Code */,
 				043982F724B0DA890030A542 /* GameScene_1.sks */,
 				334BB0832D99D33E006613A6 /* GameScene_2.sks */,
+				334BB0882D9ABE67006613A6 /* GameScene_3.sks */,
 				334BB0702D998240006613A6 /* GameOverScene.sks */,
 				334BB0722D998240006613A6 /* TitleScene.sks */,
+				33ACD0842D9D8C1E0036D018 /* SkillTreeScene.sks */,
 			);
 			path = Scenes;
 			sourceTree = "<group>";
@@ -223,6 +242,7 @@
 		043982F424B0DA890030A542 /* valsrevenge */ = {
 			isa = PBXGroup;
 			children = (
+				33ACD08A2D9EF2E60036D018 /* EnemyManager.swift */,
 				043982FD24B0DA890030A542 /* GameViewController.swift */,
 				334BB07B2D998E12006613A6 /* GameData.swift */,
 				0439830224B0DA8B0030A542 /* Assets.xcassets */,
@@ -247,6 +267,8 @@
 		334BAFF62D908A70006613A6 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				33ACD0882D9E516B0036D018 /* ExperienceComponent.swift */,
+				334BB08A2D9C137F006613A6 /* AttackComponent.swift */,
 				334BB0172D94697D006613A6 /* PathfindingComponent.swift */,
 				334BB0152D9427D7006613A6 /* AgentComponent.swift */,
 				334BB00D2D91E974006613A6 /* PhysicsComponent.swift */,
@@ -284,6 +306,7 @@
 				043982FB24B0DA890030A542 /* GameScene.swift */,
 				334BB0712D998240006613A6 /* GameOverScene.swift */,
 				334BB0732D998240006613A6 /* TitleScene.swift */,
+				33ACD0862D9D8C620036D018 /* SkillTreeScene.swift */,
 			);
 			path = Code;
 			sourceTree = "<group>";
@@ -291,7 +314,8 @@
 		334BB0872D99DC6D006613A6 /* Particles */ = {
 			isa = PBXGroup;
 			children = (
-				334BB0852D99DC66006613A6 /* BombFire.sks */,
+				33ACD0822D9D0F240036D018 /* BombFire.sks */,
+				334BB0852D99DC66006613A6 /* Fire.sks */,
 			);
 			path = Particles;
 			sourceTree = "<group>";
@@ -356,6 +380,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				041A8F93250F92690027D1C4 /* door_open.mp3 in Resources */,
+				33ACD0832D9D0F240036D018 /* BombFire.sks in Resources */,
 				041A8F8D250F92690027D1C4 /* key.mp3 in Resources */,
 				041A8F96250F92690027D1C4 /* player_die.mp3 in Resources */,
 				041A8F80250F925A0027D1C4 /* music.mp3 in Resources */,
@@ -363,7 +388,7 @@
 				041A8F98250F92870027D1C4 /* HealthMeter.sks in Resources */,
 				0439830124B0DA890030A542 /* Main.storyboard in Resources */,
 				334BB0612D971E55006613A6 /* Controller.sks in Resources */,
-				334BB0862D99DC66006613A6 /* BombFire.sks in Resources */,
+				334BB0862D99DC66006613A6 /* Fire.sks in Resources */,
 				041A8F95250F92690027D1C4 /* monster_hit.mp3 in Resources */,
 				043982F824B0DA890030A542 /* GameScene_1.sks in Resources */,
 				334BB0842D99D33E006613A6 /* GameScene_2.sks in Resources */,
@@ -371,9 +396,11 @@
 				041A8F92250F92690027D1C4 /* treasure.mp3 in Resources */,
 				041A8F94250F92690027D1C4 /* destroyed.mp3 in Resources */,
 				041A8F90250F92690027D1C4 /* food.mp3 in Resources */,
+				33ACD0852D9D8C1E0036D018 /* SkillTreeScene.sks in Resources */,
 				041A8F91250F92690027D1C4 /* monster_die.mp3 in Resources */,
 				041A8F8F250F92690027D1C4 /* exit.mp3 in Resources */,
 				041A8F8C250F92690027D1C4 /* player_hit.mp3 in Resources */,
+				334BB0892D9ABE67006613A6 /* GameScene_3.sks in Resources */,
 				334BB0742D998240006613A6 /* TitleScene.sks in Resources */,
 				334BB0752D998240006613A6 /* GameOverScene.sks in Resources */,
 				0439830324B0DA8B0030A542 /* Assets.xcassets in Resources */,
@@ -391,6 +418,7 @@
 				334BB0792D99827C006613A6 /* SKScene+SceneManager.swift in Sources */,
 				334BB07C2D998E12006613A6 /* GameData.swift in Sources */,
 				334BB0162D9427DD006613A6 /* AgentComponent.swift in Sources */,
+				33ACD0892D9E51700036D018 /* ExperienceComponent.swift in Sources */,
 				334BB0122D93FD73006613A6 /* MainGameStates.swift in Sources */,
 				04681A8224F00AEB00854228 /* SKTileMapNode+Physics.swift in Sources */,
 				334BAFFF2D90965B006613A6 /* GeneratorComponent.swift in Sources */,
@@ -399,6 +427,9 @@
 				334BB00C2D91E16F006613A6 /* CollectibleComponent.swift in Sources */,
 				0439831C24B15C410030A542 /* Player.swift in Sources */,
 				334BAFF82D908AAB006613A6 /* HealthComponent.swift in Sources */,
+				33ACD0872D9D8C620036D018 /* SkillTreeScene.swift in Sources */,
+				334BB08B2D9C1385006613A6 /* AttackComponent.swift in Sources */,
+				33ACD04C2D9D086E0036D018 /* CGVector+Extensions.swift in Sources */,
 				334BB0012D9096E1006613A6 /* GKComponent+Node.swift in Sources */,
 				04DD06A224CF894E00DA5AE0 /* SKScene+ViewProperties.swift in Sources */,
 				334BB0052D91C0BF006613A6 /* AnimationComponent.swift in Sources */,
@@ -408,6 +439,7 @@
 				043982FC24B0DA890030A542 /* GameScene.swift in Sources */,
 				043982FE24B0DA890030A542 /* GameViewController.swift in Sources */,
 				334BB00A2D91DAAA006613A6 /* PlayerStates.swift in Sources */,
+				33ACD08B2D9EF2FE0036D018 /* EnemyManager.swift in Sources */,
 				334BB0142D9414BF006613A6 /* SKNode+AgentDelegate.swift in Sources */,
 				334BB00E2D91E980006613A6 /* PhysicsComponent.swift in Sources */,
 				04DD06A424CF8B5100DA5AE0 /* GameScene+ViewUpdates.swift in Sources */,

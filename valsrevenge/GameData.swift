@@ -15,6 +15,9 @@ class GameData: NSObject, Codable {
     
     var keys: Int = 0
     var treasure: Int = 0
+    var playerLevel: Int = 1
+    var playerExperience: Int = 0
+    var playerExperienceToNextLevel: Int = 100
     
     // Set up a shared instance of GameData
     static let shared: GameData = {
@@ -50,6 +53,10 @@ class GameData: NSObject, Codable {
                 print("GameData: \(gd)")
                 // Restore data (properties)
                 level = gd.level
+                
+                playerLevel = gd.playerLevel
+                playerExperience = gd.playerExperience
+                playerExperienceToNextLevel = gd.playerExperienceToNextLevel
                 
                 keys = gd.keys
                 treasure = gd.treasure

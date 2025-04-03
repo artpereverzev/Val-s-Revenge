@@ -2,24 +2,12 @@
 //  Player.swift
 //  valsrevenge
 //
-//  Created by Tammy Coron on 7/4/20.
-//  Copyright © 2020 Just Write Code LLC. All rights reserved.
+//  Created by Artem Pereverzev on 28.03.2025.
+//  Copyright © 2025 Just Write Code LLC. All rights reserved.
 //
 
 import SpriteKit
 import GameplayKit
-
-//enum Direction: String {
-//    case stop
-//    case left
-//    case right
-//    case up
-//    case down
-//    case topLeft
-//    case topRight
-//    case bottomLeft
-//    case bottomRight
-//}
 
 class Player: SKSpriteNode {
     
@@ -33,8 +21,10 @@ class Player: SKSpriteNode {
     var maxProjectiles: Int = 1
     var numProjectiles: Int = 0
     
-    var projectileSpeed: CGFloat = 25
-    var projectileRange: TimeInterval = 1
+    var nodeDirection: String = "R"
+    
+    var projectileSpeed: CGFloat = 300//25
+    var projectileRange: TimeInterval = 1//1
     
     let attackDelay = SKAction.wait(forDuration: 0.25)
     
@@ -42,16 +32,15 @@ class Player: SKSpriteNode {
     private let treasureLabel = SKLabelNode(fontNamed: "AvenirNext-Bold")
     private let keysLabel = SKLabelNode(fontNamed: "AvenirNext-Bold")
     private let levelLabel = SKLabelNode(fontNamed: "AvenirNext-Bold")
+    private let playerLevelLabel = SKLabelNode(fontNamed: "AvenirNext-Bold")
+    private let playerExperienceLabel = SKLabelNode(fontNamed: "AvenirNext-Bold")
     
     private var keys: Int = GameData.shared.keys {
         didSet {
             keysLabel.text = "Keys: \(keys)"
-            print("Keys: \(keys)")
             if keys < 1 {
-                print("stateMachine: PlayerHasNoKeyState")
                 stateMachine.enter(PlayerHasNoKeyState.self)
             } else {
-                print("stateMachine: PlayerHasKeyState")
                 stateMachine.enter(PlayerHasKeyState.self)
             }
         }
@@ -60,16 +49,26 @@ class Player: SKSpriteNode {
     private var treasure: Int = GameData.shared.treasure {
         didSet {
             treasureLabel.text = "Treasure: \(treasure)"
-            print("Treasure: \(treasure)")
         }
     }
     
-    var agent = GKAgent2D()
-    //private var currentDirection = Direction.stop
-    
-    func getStats() -> (keys: Int, treasure: Int) {
-        return (self.keys, self.treasure)
+    private var playerLevel: Int = GameData.shared.playerLevel {
+        didSet {
+            playerLevelLabel.text = "Player level: \(playerLevel)"
+        }
     }
+    
+    private var playerExperience: Int = GameData.shared.playerExperience {
+        didSet {
+            playerExperienceLabel.text = "EXP: \(playerExperience)"
+        }
+    }
+    
+    private var playerExperienceToNextLevel: Int {
+        get { return playerLevel * 100 }
+    }
+    
+    var agent = GKAgent2D()
     
     // Override this method to allow for a class to work in Scene Editor
     required init?(coder: NSCoder) {
@@ -79,6 +78,60 @@ class Player: SKSpriteNode {
         
         agent.delegate = self
     }
+    
+    func getStats() -> (keys: Int, treasure: Int) {
+        return (self.keys, self.treasure)
+    }
+    
+    func flipPlayerSpriteDirection(direction: CGVector) {
+        if direction.dx < 0 {
+            nodeDirection = "L"
+            self.xScale = -abs(xScale)
+        } else {
+            nodeDirection = "R"
+            self.xScale = abs(xScale)
+        }
+    }
+    
+    func flipPlayerSpriteDirection(direction: String) {
+        if direction == "L" {
+            nodeDirection = "L"
+            self.xScale = -abs(xScale)
+        } else {
+            nodeDirection = "R"
+            self.xScale = abs(xScale)
+        }
+    }
+    
+    func rotatePlayerSpriteDirection(direction: String) {
+        if direction == "L" {
+            nodeDirection = "L"
+            self.zRotation = -(CGFloat(Double.pi/2))
+        } else {
+            nodeDirection = "R"
+            self.zRotation = -(CGFloat(Double.pi/2))
+        }
+    }
+    
+    func setupAnimation() {
+        let animationSettings = Animation(textures: SKTexture.loadTextures(atlas: "player_val",
+                                                                           prefix: "hero_",
+                                                                           startsAt: 0,
+                                                                           stopAt: 6))
+        
+        let textures = animationSettings.textures
+        let timePerFrame = animationSettings.timePerFrame
+        let animationAction = SKAction.animate(with: textures, timePerFrame: timePerFrame)
+        
+        if animationSettings.repeatTexturesForever == true {
+            let repeatAction = SKAction.repeatForever(animationAction)
+            self.run(repeatAction)
+        } else {
+            self.run(animationAction)
+        }
+        
+    }
+
     
     func setupHUD(scene: GameScene) {
         
@@ -103,10 +156,26 @@ class Player: SKSpriteNode {
         levelLabel.position = CGPoint(x: 0, y: treasureLabel.frame.minY - (keysLabel.frame.height * 2.1))
         levelLabel.zPosition += 1
         
+        // Setup the player level label
+        playerLevelLabel.text = "Player level: \(playerLevel)"
+        playerLevelLabel.horizontalAlignmentMode = .right
+        playerLevelLabel.verticalAlignmentMode = .center
+        playerLevelLabel.position = CGPoint(x: 0, y: treasureLabel.frame.minY - (keysLabel.frame.height * 3.1))
+        playerLevelLabel.zPosition += 1
+        
+        // Setup the player experience label
+        playerExperienceLabel.text = "Experience: \(playerExperience)"
+        playerExperienceLabel.horizontalAlignmentMode = .right
+        playerExperienceLabel.verticalAlignmentMode = .center
+        playerExperienceLabel.position = CGPoint(x: 0, y: treasureLabel.frame.minY - (keysLabel.frame.height * 4.1))
+        playerExperienceLabel.zPosition += 1
+        
         // Add labels to the HUD
         hud.addChild(treasureLabel)
         hud.addChild(keysLabel)
         hud.addChild(levelLabel)
+        hud.addChild(playerLevelLabel)
+        hud.addChild(playerExperienceLabel)
         
         // Add the HUD to the scene
         scene.addChild(hud)
@@ -121,18 +190,14 @@ class Player: SKSpriteNode {
         
         switch GameObjectType(rawValue: collectible.collectibleType) {
         case .key:
-            print("Collected key")
             keys += collectible.value
-            print("Keys total: \(keys)")
             
         case .food:
-            print("Collected food")
             if let hc = entity?.component(ofType: HealthComponent.self) {
                 hc.updateHealth(collectible.value, forNode: self)
             }
             
         case .treasure:
-            print("Collected treasure")
             treasure += collectible.value
             
         default:
@@ -141,12 +206,10 @@ class Player: SKSpriteNode {
     }
     
     func useKeyToOpenDoor(_ doorNode: SKNode) {
-        print("Use key to open door")
         
         switch stateMachine.currentState {
         case is PlayerHasKeyState:
             keys -= 1
-            print("Keys total: \(keys)")
             
             doorNode.removeFromParent()
             run(SKAction.playSoundFileNamed("door_open", waitForCompletion: true))
@@ -155,6 +218,25 @@ class Player: SKSpriteNode {
             break
         }
     }
+    
+    func addExperience(_ experience: Int) {
+        playerExperience += experience
+        checkLevelUp()
+    }
+    
+    private func checkLevelUp() {
+        print("playerExperience: \(playerExperience)\nplayerExperienceToNextLevel: \(playerExperienceToNextLevel)")
+        if playerExperience >= playerExperienceToNextLevel {
+            playerExperience -= playerExperienceToNextLevel
+            playerLevel += 1
+            onLevelUp() // Modify
+        }
+    }
+    
+    private func onLevelUp() {
+        print("Level up!: \(playerLevel)")
+    }
+
     
     func attack(direction: CGVector, emitterNamed: String?) {
         
@@ -167,7 +249,9 @@ class Player: SKSpriteNode {
             
             // Setup the projectile
             let projectile = SKSpriteNode(imageNamed: "knife")
-            projectile.position = CGPoint(x: 0.0, y: 0.0)
+            projectile.position = self.position
+            projectile.xScale = 0.6
+            projectile.yScale = 0.6
             projectile.zPosition += 1
             
             // TODO: Need to decide moving to other component? Or create entire attack component with particles, attack type (range/melee etc)?
@@ -179,7 +263,7 @@ class Player: SKSpriteNode {
                 projectile.addChild(particles)
             }
             
-            addChild(projectile)
+            scene?.addChild(projectile)
             
             // Setup the physics for the projectile
             let physicsBody = SKPhysicsBody(rectangleOf: projectile.size)
@@ -194,15 +278,19 @@ class Player: SKSpriteNode {
             
             projectile.physicsBody = physicsBody
             
+            let normalizedDirection = direction.normalized()// TEST
+            
             // Set the throw direction
-            let throwDirection = CGVector(dx: direction.dx * projectileSpeed,
-                                          dy: direction.dy * projectileSpeed)
+            let throwDirection = CGVector(
+                dx: normalizedDirection.dx * projectileSpeed,
+                dy: normalizedDirection.dy * projectileSpeed
+            )
             
             // Create and run the actions to attack
             let wait = SKAction.wait(forDuration: projectileRange)
             let removeFromScene = SKAction.removeFromParent()
             
-            let spin = SKAction.applyTorque(0.25, duration: projectileRange)
+            let spin = SKAction.applyTorque(0.05, duration: projectileRange)//0.25, coulde be different because of node scale?
             let toss = SKAction.move(by: throwDirection, duration: projectileRange)
             
             let actionTTL = SKAction.sequence([wait, removeFromScene])
@@ -219,90 +307,4 @@ class Player: SKSpriteNode {
             run(reduceSequence)
         }
     }
-    
-//    func move(_ direction: Direction) {
-//        //print("move player: \(direction.rawValue)")
-//        switch direction {
-//        case .up:
-//            self.physicsBody?.velocity = CGVector(dx: 0, dy: 100)
-//            //self.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 100))
-//            //self.physicsBody?.applyForce(CGVector(dx: 0, dy: 100))
-//        case .down:
-//            self.physicsBody?.velocity = CGVector(dx: 0, dy: -100)
-//        case .left:
-//            self.physicsBody?.velocity = CGVector(dx: -100, dy: 0)
-//        case .right:
-//            self.physicsBody?.velocity = CGVector(dx: 100, dy: 0)
-//        case .topLeft:
-//            self.physicsBody?.velocity = CGVector(dx: -100, dy: 100)
-//        case .topRight:
-//            self.physicsBody?.velocity = CGVector(dx: 100, dy: 100)
-//        case .bottomLeft:
-//            self.physicsBody?.velocity = CGVector(dx: -100, dy: -100)
-//        case .bottomRight:
-//            self.physicsBody?.velocity = CGVector(dx: 100, dy: -100)
-//        case .stop:
-//            stop()
-//        }
-//        
-//        if direction != .stop {
-//            currentDirection = direction
-//        }
-//    }
-    
-//    func stop() {
-//        self.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
-//    }
-    
-//    func attack() {
-//        let projectile = SKSpriteNode(imageNamed: "knife")
-//        projectile.position = CGPoint(x: 0.0, y: 0.0)
-//        addChild(projectile)
-//        
-//        // Setup physics for projectile
-//        let physicsBody = SKPhysicsBody(rectangleOf: projectile.size)
-//        
-//        physicsBody.affectedByGravity = false
-//        physicsBody.allowsRotation = true
-//        physicsBody.isDynamic = true
-//        
-//        physicsBody.categoryBitMask = PhysicsBody.projectile.categoryBitMask
-//        physicsBody.contactTestBitMask = PhysicsBody.projectile.contactTestBitMask
-//        physicsBody.collisionBitMask = PhysicsBody.projectile.collisionBitMask
-//        
-//        projectile.physicsBody = physicsBody
-//        
-//        var throwDirection = CGVector(dx: 0, dy: 0)
-//        
-//        switch currentDirection {
-//        case .up:
-//            throwDirection = CGVector(dx: 0, dy: 300)
-//            projectile.zRotation = 0
-//        case .down:
-//            throwDirection = CGVector(dx: 0, dy: -300)
-//            projectile.zRotation = -CGFloat.pi
-//        case .left:
-//            throwDirection = CGVector(dx: -300, dy: 0)
-//            projectile.zRotation = CGFloat.pi/2
-//        case .right, .stop: // default pre-movement (throw right)
-//            throwDirection = CGVector(dx: 300, dy: 0)
-//            projectile.zRotation = -CGFloat.pi/2
-//        case .topLeft:
-//            throwDirection = CGVector(dx: -300, dy: 300)
-//            projectile.zRotation = CGFloat.pi/4
-//        case .topRight:
-//            throwDirection = CGVector(dx: 300, dy: 300)
-//            projectile.zRotation = -CGFloat.pi/4
-//        case .bottomLeft:
-//            throwDirection = CGVector(dx: -300, dy: -300)
-//            projectile.zRotation = 3 * CGFloat.pi/4
-//        case .bottomRight:
-//            throwDirection = CGVector(dx: 300, dy: -300)
-//            projectile.zRotation = 3 * -CGFloat.pi/4
-//        }
-//        
-//        let throwProjectile = SKAction.move(by: throwDirection, duration: 0.25)
-//        projectile.run(throwProjectile,
-//                       completion: {projectile.removeFromParent()})
-//    }
 }

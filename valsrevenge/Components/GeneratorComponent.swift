@@ -68,6 +68,15 @@ class GeneratorComponent: GKComponent {
             physicsComponent.bodyCategory = PhysicsCategory.monster.rawValue
             monsterEntity.addComponent(physicsComponent)
             
+            let animationComponent = AnimationComponent()
+            let monsterRawValue = GameObjectType.RawValue(monsterType)
+            animationComponent.animationType = monsterRawValue
+            monsterEntity.addComponent(animationComponent)
+            
+            let experienceComponent = ExperienceComponent()
+            experienceComponent.experienceType = monsterRawValue
+            monsterEntity.addComponent(experienceComponent)
+            
             if let scene = componentNode.scene as? GameScene {
                 scene.entities.append(monsterEntity)
             }
@@ -99,6 +108,11 @@ class GeneratorComponent: GKComponent {
         let physicsComponent = PhysicsComponent()
         physicsComponent.bodyCategory = PhysicsCategory.monster.rawValue
         componentNode.entity?.addComponent(physicsComponent)
+        
+        let monsterRawValue = GameObjectType.RawValue(monsterType)
+        let experienceComponent = ExperienceComponent()
+        experienceComponent.experienceType = monsterRawValue
+        componentNode.entity?.addComponent(experienceComponent)
         
     }
     

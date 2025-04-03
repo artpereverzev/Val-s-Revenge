@@ -2,10 +2,9 @@
 //  GameScene.swift
 //  valsrevenge
 //
-//  Created by Tammy Coron on 7/4/20.
-//  Copyright © 2020 Just Write Code LLC. All rights reserved.
+//  Created by Artem Pereverzev on 28.03.2025.
+//  Copyright © 2025 Just Write Code LLC. All rights reserved.
 //
-
 import SpriteKit
 import GameplayKit
 
@@ -17,7 +16,7 @@ class GameScene: SKScene {
     
     let mainGameStateMachine = GKStateMachine(states: [PauseState(), PlayingState()])
     private var lastUpdateTime : TimeInterval = 0
-    private var player: Player?
+    public var player: Player?
     
     let margin: CGFloat = 20.0
     
@@ -82,14 +81,13 @@ class GameScene: SKScene {
         self.lastUpdateTime = 0
         
         GameData.shared.saveDataWithFileName("gamedata.json")
+        
     }
     
     override func didMove(to view: SKView) {
         
         mainGameStateMachine.enter(PauseState.self)
         
-//        player = childNode(withName: "player") as? Player
-//        player?.move(.stop)
         setupPlayer()
         
         setupCamera()
@@ -100,10 +98,10 @@ class GameScene: SKScene {
         let dungeonMapNode = childNode(withName: "Dungeon Tile Map") as? SKTileMapNode
         dungeonMapNode?.setupMapPhysics()
         
+        let newMapNode = childNode(withName: "Tile Map node") as? SKTileMapNode
+        newMapNode?.setupEdgeLoop()
+        
         physicsWorld.contactDelegate = self
-        
-        //startAdvancedNavigation()
-        
     }
     
     func setupCamera() {
@@ -130,6 +128,9 @@ class GameScene: SKScene {
         if let controllerAttack = controllerAttack {
             addChild(controllerAttack)
         }
+        
+        player?.setupAnimation()
+        print("Animation setup is done")
         
         setupMusic()
     }
@@ -168,17 +169,6 @@ class GameScene: SKScene {
                 controllerAttack.beginTracking()
             }
         }
-        
-//        let nodeAtPoint = atPoint(pos)
-//        if let touchedNode = nodeAtPoint as? SKSpriteNode {
-//            if touchedNode.name?.starts(with: "controller_") == true {
-//                let direction = touchedNode.name?.replacingOccurrences(
-//                    of: "controller_", with: "")
-//                player?.move(Direction(rawValue: direction ?? "stop")!)
-//            } else if touchedNode.name == "button_attack" {
-//                player?.attack()
-//            }
-//        }
     }
     
     func touchMoved(toPoint pos: CGPoint, touch: UITouch) {
@@ -195,15 +185,6 @@ class GameScene: SKScene {
         default:
             break
         }
-        
-//        let nodeAtPoint = atPoint(pos)
-//        if let touchedNode = nodeAtPoint as? SKSpriteNode {
-//            if touchedNode.name?.starts(with: "controller_") == true {
-//                let direction = touchedNode.name?.replacingOccurrences(
-//                    of: "controller_", with: "")
-//                player?.move(Direction(rawValue: direction ?? "stop")!)
-//            }
-//        }
     }
     
     func touchUp(atPoint pos: CGPoint, touch: UITouch) {
@@ -222,13 +203,6 @@ class GameScene: SKScene {
         default:
             break
         }
-            
-//        let nodeAtPoint = atPoint(pos)
-//        if let touchedNode = nodeAtPoint as? SKSpriteNode {
-//            if touchedNode.name?.starts(with: "controller_") == true {
-//                player?.stop()
-//            }
-//        }
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -275,93 +249,11 @@ class GameScene: SKScene {
     }
     
     func updateControllerLocation() {
-        
         controllerMovement?.position = CGPoint(x: (viewLeft + margin + insets.left), y: (viewBottom + margin + insets.bottom))
         controllerAttack?.position = CGPoint(x: (viewRight - margin - insets.right), y: (viewBottom + margin + insets.bottom))
-        
-//        let controller = childNode(withName: "//controller")
-//        controller?.position = CGPoint(x: (viewLeft + margin + insets.left),
-//                                       y: (viewBottom + margin + insets.bottom))
-//        
-//        let attackButton = childNode(withName: "//attackButton")
-//        attackButton?.position = CGPoint(x: (viewRight - margin - insets.right),
-//                                         y: (viewBottom + margin + insets.bottom))
     }
     
     func updateHUDLocation() {
         player?.hud.position = CGPoint(x: (viewRight - margin - insets.right), y: (viewTop - margin - insets.top))
     }
-    
-//    func startAdvancedNavigation() {
-//        
-//        // Check for navigation graph and key node
-//        guard let sceneGraph = graphs.values.first,
-//                let keyNode = childNode(withName: "key") as? SKSpriteNode else {
-//            return
-//        }
-//        
-//        // Setup the agent
-//        let agent = GKAgent2D()
-//        
-//        // Setup the delegate and the initial position
-//        agent.delegate = keyNode
-//        agent.position = vector_float2(Float(keyNode.position.x), Float(keyNode.position.y))
-//        
-//        // Setup the agent properties
-//        agent.mass = 1
-//        agent.speed = 50
-//        agent.maxSpeed = 100
-//        agent.maxAcceleration = 100
-//        agent.radius = 60
-//        
-//        // Find objects
-//        var obstacles = [GKCircleObstacle]()
-//        
-//        // Locate generator nodes
-//        enumerateChildNodes(withName: "generator_*") {
-//            (node, stop) in
-//            
-//            // Create compatible obstacle
-//            let circle = GKCircleObstacle(radius: Float(node.frame.size.width / 2))
-//            circle.position = vector_float2(Float(node.position.x), Float(node.position.y))
-//            obstacles.append(circle)
-//        }
-//        
-//        // Find the path
-//        if let nodesOnPath = sceneGraph.nodes as? [GKGraphNode2D] {
-//            
-//            // Show the path (optional code)
-//            for (index, node) in nodesOnPath.enumerated() {
-//                let shapeNode = SKShapeNode(circleOfRadius: 10)
-//                shapeNode.fillColor = .gray
-//                shapeNode.position = CGPoint(x: CGFloat(node.position.x), y: CGFloat(node.position.y))
-//                
-//                // Add node number
-//                let number = SKLabelNode(text: "\(index)")
-//                number.position.y = 15
-//                shapeNode.addChild(number)
-//                
-//                addChild(shapeNode)
-//            }
-//            // (end optional code)
-//            
-//            // Create a path to follow
-//            let path = GKPath(graphNodes: nodesOnPath, radius: 0)
-//            path.isCyclical = true
-//            
-//            // Setup the goals
-//            let followPath = GKGoal(toFollow: path, maxPredictionTime: 1.0, forward: true)
-//            let avoidObstacles = GKGoal(toAvoid: obstacles, maxPredictionTime: 1.0)
-//            
-//            // Add behavior based on goals
-//            agent.behavior = GKBehavior(goals: [followPath, avoidObstacles])
-//            
-//            // Set goal weights
-//            agent.behavior?.setWeight(0.5, for: followPath)
-//            agent.behavior?.setWeight(100, for: avoidObstacles)
-//            
-//            // Add agent to component system
-//            agentComponentSystem.addComponent(agent)
-//        }
-//    }
 }

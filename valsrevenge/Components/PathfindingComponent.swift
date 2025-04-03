@@ -22,16 +22,16 @@ class PathfindingComponent: GKComponent {
         }
         
         // START: TO FIX (AND TO DELETE)
-        print("SCENEGRAPH: \(sceneGraph)")
+        //print("SCENEGRAPH: \(sceneGraph)")
         
         let sceneGraphs = scene.graphs
         var arrayGraphs = [GKGraph]()
         
         for sc in sceneGraphs {
-            print("Graph sceneName: \(sc.key)\nGraph sceneValue: \(sc.value)")
+            //print("Graph sceneName: \(sc.key)\nGraph sceneValue: \(sc.value)")
             arrayGraphs.append(sc.value)
         }
-        print("All graphs: \(arrayGraphs)\nAll graph nodes: \(String(describing: sceneGraph.nodes))\nNODES: \(arrayGraphs[0].nodes)")
+        //print("All graphs: \(arrayGraphs)\nAll graph nodes: \(String(describing: sceneGraph.nodes))\nNODES: \(arrayGraphs[0].nodes)")
         // END: TO FIX (AND TO DELETE)
         
         // Start pathfinding
@@ -65,7 +65,7 @@ class PathfindingComponent: GKComponent {
         
         // Find the path
         if let nodesOnPath = sceneGraph.nodes as? [GKGraphNode2D] {
-            print("SCENEGRAPH.NODE: \(nodesOnPath)")// TO DELETE
+            //print("SCENEGRAPH.NODE: \(nodesOnPath)")// TO DELETE
             
             // Show the path (optional code)
             for (index, node) in nodesOnPath.enumerated() {

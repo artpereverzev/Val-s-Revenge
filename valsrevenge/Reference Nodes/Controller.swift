@@ -6,6 +6,7 @@
 //  Copyright © 2025 Just Write Code LLC. All rights reserved.
 //
 import SpriteKit
+import GameplayKit
 
 class Controller: SKReferenceNode {
     
@@ -13,6 +14,8 @@ class Controller: SKReferenceNode {
     
     private var attachedNode: SKNode!
     private var nodeSpeed: CGFloat!
+    
+    private var nodeDirection: String!
     
     private var base: SKNode!
     private var joystick: SKSpriteNode!
@@ -145,20 +148,41 @@ class Controller: SKReferenceNode {
     }
     
     func moveAttachedNode(direction: CGVector) {
+        guard let player = attachedNode as? Player else {
+            return
+        }
+        
+        if direction.dx < 0 {
+            nodeDirection = "L"
+        } else {
+            nodeDirection = "R"
+        }
         
         attachedNode?.physicsBody?.velocity = CGVector(dx: CGFloat(direction.dx * nodeSpeed),
                                                        dy: CGFloat(direction.dy * nodeSpeed))
         
+        player.flipPlayerSpriteDirection(direction: nodeDirection)
     }
     
     func otherAction(direction: CGVector) {
         
         // If the player exists, launch it's attack
+//        guard let player = attachedNode as? Player else {
+//            return
+//        }
+        
         guard let player = attachedNode as? Player else {
             return
         }
         
-        player.attack(direction: direction, emitterNamed: "BombFire.sks")
+        if direction.dx < 0 {
+            nodeDirection = "L"
+        } else {
+            nodeDirection = "R"
+        }
         
+        player.flipPlayerSpriteDirection(direction: nodeDirection)
+        
+        player.attack(direction: direction, emitterNamed: "Fire.sks")
     }
 }

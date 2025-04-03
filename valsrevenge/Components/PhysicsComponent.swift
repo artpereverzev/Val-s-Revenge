@@ -14,9 +14,9 @@ enum PhysicsCategory: String {
     case door
     case monster
     case projectile
+    case enemyProjectile
     case collectible
     case exit
-    
 }
 
 enum PhysicsShape: String {
@@ -32,13 +32,15 @@ struct PhysicsBody: OptionSet, Hashable {
     static let door = PhysicsBody(rawValue: 1 << 2) // 4
     static let monster = PhysicsBody(rawValue: 1 << 3) // 8
     static let projectile = PhysicsBody(rawValue: 1 << 4) // 16
-    static let collectible = PhysicsBody(rawValue: 1 << 5) // 32
-    static let exit = PhysicsBody(rawValue: 1 << 6) // 64
+    static let enemyProjectile = PhysicsBody(rawValue: 1 << 5) // 32
+    static let collectible = PhysicsBody(rawValue: 1 << 6) // 64
+    static let exit = PhysicsBody(rawValue: 1 << 7) // 128
     
     static var collisions: [PhysicsBody: [PhysicsBody]] = [
         .player: [.wall, .door, .monster],
         .monster: [.wall, .door, .monster],
-        .projectile: [.wall, .door, .monster]
+        .projectile: [.wall, .door, .monster],
+        .enemyProjectile: [.wall, .door]
     ]
     
     static var contactTest: [PhysicsBody: [PhysicsBody]] = [
@@ -47,6 +49,7 @@ struct PhysicsBody: OptionSet, Hashable {
         .door: [.player],
         .monster: [.player, .projectile],
         .projectile: [.monster, .collectible, .wall],
+        .enemyProjectile: [.wall],
         .collectible: [.player, .projectile],
         .exit: [.player]
     ]
@@ -85,6 +88,8 @@ struct PhysicsBody: OptionSet, Hashable {
             return self.monster
         case .projectile:
             return self.projectile
+        case .enemyProjectile:
+            return Self.enemyProjectile
         case .collectible:
             return self.collectible
         case .exit:

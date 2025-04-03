@@ -2,8 +2,8 @@
 //  SKScene+SceneManager.swift
 //  valsrevenge
 //
-//  Created by Tammy Coron on 10/16/20.
-//  Copyright © 2020 Just Write Code LLC. All rights reserved.
+//  Created by Artem Pereverzev on 28.03.2025.
+//  Copyright © 2025 Just Write Code LLC. All rights reserved.
 //
 
 import SpriteKit
@@ -13,7 +13,7 @@ extension SKScene {
     
     func startNewGame() {
         // Reset saved game data
-        GameData.shared.level = 1
+        GameData.shared.level = 3
         
         GameData.shared.keys = 0
         GameData.shared.treasure = 0
@@ -80,6 +80,26 @@ extension SKScene {
                                             SKTransition.doorsOpenHorizontal(withDuration: 1.0))
             } else {
                 print("Can't load game over scene.")
+            }
+        }
+        
+        // Run the actions in sequence
+        run(SKAction.sequence([wait, block]))
+    }
+    
+    func loadSkillTreeScene() {
+        print("Attempting to load skill tree scene.")
+        
+        // Create actions to load the game over scene
+        let wait = SKAction.wait(forDuration: 0.50)
+        let block = SKAction.run {
+            if let scene = SkillTreeScene(fileNamed: "SkillTreeScene") {
+                scene.scaleMode = .aspectFill
+                
+                self.view?.presentScene(scene, transition:
+                                            SKTransition.doorsOpenHorizontal(withDuration: 1.0))
+            } else {
+                print("Can't load skill tree scene.")
             }
         }
         
