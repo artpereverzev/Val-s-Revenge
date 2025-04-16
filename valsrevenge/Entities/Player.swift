@@ -287,6 +287,7 @@ class Player: SKSpriteNode {
             )
             
             // Create and run the actions to attack
+            let soundThrowKnife = SKAction.playSoundFileNamed("throw", waitForCompletion: false)
             let wait = SKAction.wait(forDuration: projectileRange)
             let removeFromScene = SKAction.removeFromParent()
             
@@ -294,7 +295,7 @@ class Player: SKSpriteNode {
             let toss = SKAction.move(by: throwDirection, duration: projectileRange)
             
             let actionTTL = SKAction.sequence([wait, removeFromScene])
-            let actionThrow = SKAction.group([spin, toss])
+            let actionThrow = SKAction.group([soundThrowKnife, spin, toss])
             
             let actionAttack = SKAction.group([actionTTL, actionThrow])
             projectile.run(actionAttack)

@@ -34,7 +34,7 @@ struct Collectible {
 // MARK: - COLLECTIBLE COMPONENT CODE STARTS HERE
 class CollectibleComponent: GKComponent {
     
-    @GKInspectable var collectibleType: String = GameObject.defaultCollectibleType
+    @GKInspectable var collectibleType: String = GameObjectConfig.defaultCollectibleType.rawValue
     @GKInspectable var value: Int = 1
     
     private var collectSoundAction = SKAction()
@@ -42,12 +42,17 @@ class CollectibleComponent: GKComponent {
     private var canDestroy = false
     
     override func didAddToEntity() {
-        guard let collectible = GameObject.forCollectibleType(GameObjectType(rawValue: collectibleType)) else {
+//        guard let collectible = GameObject.forCollectibleType(GameObjectType(rawValue: collectibleType)) else {
+//            return
+//        }
+        
+        guard let type = GameObjectType(rawValue: collectibleType),
+              let collectible = GameObjectConfig.collectible(for: type) else {
             return
         }
         
-        collectSoundAction = SKAction.playSoundFileNamed(collectible.collectSoundFile, waitForCompletion: false)
-        destroySoundAction = SKAction.playSoundFileNamed(collectible.destroySoundFile, waitForCompletion: false)
+        collectSoundAction = SKAction.playSoundFileNamed(collectible.collectSound, waitForCompletion: false)
+        destroySoundAction = SKAction.playSoundFileNamed(collectible.destroySound, waitForCompletion: false)
         
         canDestroy = collectible.canDestroy
     }

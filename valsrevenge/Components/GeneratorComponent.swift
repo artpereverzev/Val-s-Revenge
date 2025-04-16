@@ -11,7 +11,7 @@ import GameplayKit
 
 class GeneratorComponent: GKComponent {
     
-    @GKInspectable var monsterType: String = GameObject.defaultGeneratorType
+    @GKInspectable var monsterType: String = GameObjectConfig.defaultGeneratorType.rawValue
     @GKInspectable var maxMonsters: Int = 10
     
     @GKInspectable var waitTime: TimeInterval = 5
