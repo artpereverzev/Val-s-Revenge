@@ -11,7 +11,7 @@ import SpriteKit
 
 class ExperienceComponent: GKComponent {
     
-    @GKInspectable var experienceType: String = GameObject.defaultExperienceType
+    @GKInspectable var experienceType: String = GameObjectConfig.defaultExperienceType.rawValue//GameObject.defaultExperienceType
     
     override func didAddToEntity() {
         
@@ -20,9 +20,11 @@ class ExperienceComponent: GKComponent {
     func rewardPlayer() {
         guard let scene = componentNode.scene as? GameScene,
               let player = scene.childNode(withName: "player") as? Player,
-              let experience = GameObject.forExperienceType(GameObjectType(rawValue: experienceType)) else {
+              let type = GameObjectType(rawValue: experienceType) else {
+              //let experience = GameObject.forExperienceType(GameObjectType(rawValue: experienceType)) else {
             return
         }
+        let experience = GameObjectConfig.experience(for: type)
         player.addExperience(experience)
     }
     

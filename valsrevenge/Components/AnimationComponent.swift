@@ -34,10 +34,12 @@ struct Animation {
 
 class AnimationComponent: GKComponent {
     
-    @GKInspectable var animationType: String = GameObject.defaultAnimationType
+    @GKInspectable var animationType: String = GameObjectConfig.defaultAnimationType.rawValue
     
     override func didAddToEntity() {
-        guard let animation = GameObject.forAnimationType(GameObjectType(rawValue: animationType)) else {
+        //guard let animation = GameObject.forAnimationType(GameObjectType(rawValue: animationType)) else {
+        guard let type = GameObjectType(rawValue: animationType),
+              let animation = GameObjectConfig.animation(for: type) else {
             return
         }
         

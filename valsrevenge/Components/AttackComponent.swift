@@ -35,10 +35,12 @@ class AttackComponent: GKComponent {
     var numProjectiles: Int = 0
     
     var projectileSpeed: CGFloat = 300
+    
     var projectileRange: TimeInterval = 1
     
     let attackDelay = SKAction.wait(forDuration: 1.0)
     var enemyProjectile = SKSpriteNode()
+    var enemyProjectileSound = SKAction()
     
     func rangeAttack(direction: CGVector, emitterNamed: String?, type: WeaponType?) {
         
@@ -57,6 +59,7 @@ class AttackComponent: GKComponent {
             switch type {
             case .throwKnife:
                 enemyProjectile = SKSpriteNode(imageNamed: "knife")
+                enemyProjectileSound = SKAction.playSoundFileNamed("throw", waitForCompletion: true)
             case .fireball:
                 enemyProjectile = SKSpriteNode(imageNamed: "")
             case .iceball:
@@ -116,8 +119,10 @@ class AttackComponent: GKComponent {
             let spin = SKAction.applyTorque(0.05, duration: projectileRange)//0.25
             let toss = SKAction.move(by: throwDirection, duration: projectileRange)
             
+            let sound = enemyProjectileSound
+            
             let actionTTL = SKAction.sequence([wait, removeFromScene])
-            let actionThrow = SKAction.group([spin, toss])
+            let actionThrow = SKAction.group([spin, toss, sound])
             
             let actionAttack = SKAction.group([actionTTL, actionThrow])
             enemyProjectile.run(actionAttack)
